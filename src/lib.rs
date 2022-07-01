@@ -27,21 +27,19 @@ mod tests {
         fn add(self, rhs: Self) -> Self::Output {
             Self {
                 x: self.x + rhs.x,
-                y: self.y + rhs.y
+                y: self.y + rhs.y,
             }
         }
     }
 
     #[test]
     pub fn basic_with_custom_struct() {
-        let mut s = SegmentTree::new
-        (vec![
-            Point{x:1,y:2}, 
-            Point{x:2,y:3}, 
-            Point{x:3,y:4},
-            Point{x:4, y:100},
+        let mut s = SegmentTree::new(vec![
+            Point { x: 1, y: 2 },
+            Point { x: 2, y: 3 },
+            Point { x: 3, y: 4 },
+            Point { x: 4, y: 100 },
         ]);
-        assert_eq!(s.query_range(1, 2).unwrap(), Point{x:5, y:7});
+        assert_eq!(s.query_range(1, 2).unwrap(), Point { x: 5, y: 7 });
     }
-
 }

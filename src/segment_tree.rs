@@ -1,4 +1,5 @@
 use std::ops::Add;
+
 pub struct SegmentTree<T>
 where
     T: Add<Output = T> + Default + Copy,
