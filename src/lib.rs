@@ -13,6 +13,6 @@ mod tests {
         }
 
         s.update_val(2, 10);
-        assert_eq!(s.query_range(1, 3).unwrap(), 16);
+        assert_eq!(s.query_range(1, 3).unwrap(), 2 + 10 + 4);
     }
 }
