@@ -1,5 +1,6 @@
+use crate::common::*;
 use std::ops::Add;
-use crate::RangeQuerier;
+
 pub struct SegmentTree<T>
 where
     T: Add<Output = T> + Default + Copy,
@@ -13,17 +14,17 @@ impl<T> RangeQuerier for SegmentTree<T>
 where
     T: Add<Output = T> + Default + Copy,
 {
-    type Item = T;
-    fn query_range(&self, left: usize, right: usize) -> Result<T, ()> {
+    type EntryType = T;
+    fn query_range(&self, left: usize, right: usize) -> Result<Self::EntryType> {
         if (left > right) || (left >= self.size) {
-            return Err(());
+            return Err( Error {kind: ErrorKind::QueryRangeNotValid { left, right, length: self.size }} );
         }
         Ok(self.query_util(left, right, 1, 0, self.size - 1))
     }
 
-    fn update_val(&mut self, index: usize, new_val: T) -> Result<(), ()> {
+    fn update_val(&mut self, index: usize, new_val: T) -> Result<()> {
         if index >= self.size {
-            return Err(());
+            return Err(Error {kind: ErrorKind::UpdateIndexNotValid { index, length: self.size }});
         }
         self.update_util(index, new_val, 1, 0, self.size - 1);
         Ok(())
@@ -34,12 +35,15 @@ impl<T> SegmentTree<T>
 where
     T: Add<Output = T> + Default + Copy,
 {
-    pub fn new(elems: Vec<T>) -> Self {
+    pub fn new(elems: Vec<T>) -> Result<Self> {
         let size = elems.len();
+        if size == 0 {
+            return Err(Error{ kind: ErrorKind::ZeroLengthConstruction {  }});
+        }
         let tree = vec![T::default(); 4 * size];
         let mut seg_tree = SegmentTree { size, elems, tree };
         seg_tree.build(1, 0, size - 1);
-        seg_tree
+        Ok(seg_tree)
     }
 
 
@@ -75,7 +79,14 @@ where
             + self.query_util(query_left, query_right, 2 * k + 1, mid + 1, right)
     }
 
-    fn update_util(&mut self, index: usize, new_val: T, k: usize, left: usize, right: usize) {
+    fn update_util(
+        &mut self, 
+        index: usize, 
+        new_val: T, 
+        k: usize, 
+        left: usize, 
+        right: usize
+    ) {
         if left == right {
             self.tree[k] = new_val;
             self.elems[index] = new_val;
