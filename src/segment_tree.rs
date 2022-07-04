@@ -1,5 +1,5 @@
 use std::ops::Add;
-
+use crate::rangeQuerier;
 pub struct SegmentTree<T>
 where
     T: Add<Output = T> + Default + Copy,
@@ -7,6 +7,27 @@ where
     pub size: usize,
     pub elems: Vec<T>,
     pub tree: Vec<T>,
+}
+
+impl<T> rangeQuerier for SegmentTree<T>
+where
+    T: Add<Output = T> + Default + Copy,
+{
+    type Item = T;
+    fn query_range(&self, left: usize, right: usize) -> Result<T, ()> {
+        if (left > right) || (left >= self.size) {
+            return Err(());
+        }
+        Ok(self.query_util(left, right, 1, 0, self.size - 1))
+    }
+
+    fn update_val(&mut self, index: usize, new_val: T) -> Result<(), ()> {
+        if index >= self.size {
+            return Err(());
+        }
+        self.update_util(index, new_val, 1, 0, self.size - 1);
+        Ok(())
+    }
 }
 
 impl<T> SegmentTree<T>
@@ -21,20 +42,6 @@ where
         seg_tree
     }
 
-    pub fn query_range(&self, left: usize, right: usize) -> Result<T, ()> {
-        if (left > right) || (left >= self.size) {
-            return Err(());
-        }
-        Ok(self.query_util(left, right, 1, 0, self.size - 1))
-    }
-
-    pub fn update_val(&mut self, index: usize, new_val: T) -> Result<(), ()> {
-        if index >= self.size {
-            return Err(());
-        }
-        self.update_util(index, new_val, 1, 0, self.size - 1);
-        Ok(())
-    }
 
     fn build(&mut self, k: usize, left: usize, right: usize) {
         if left == right {
