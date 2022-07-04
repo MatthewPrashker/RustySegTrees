@@ -10,14 +10,11 @@ pub trait RangeQuerier {
 
 pub type Result<T> = result::Result<T, Error>;
 
-/// An error that occurred during the construction of an Aho-Corasick
-/// automaton.
 #[derive(Clone, Debug)]
 pub struct Error {
     pub kind: ErrorKind,
 }
 
-/// The kind of error that occurred.
 #[derive(Clone, Debug)]
 pub enum ErrorKind {
     
