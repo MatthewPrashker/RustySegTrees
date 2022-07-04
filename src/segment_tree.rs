@@ -1,5 +1,5 @@
 use std::ops::Add;
-use crate::rangeQuerier;
+use crate::RangeQuerier;
 pub struct SegmentTree<T>
 where
     T: Add<Output = T> + Default + Copy,
@@ -9,7 +9,7 @@ where
     pub tree: Vec<T>,
 }
 
-impl<T> rangeQuerier for SegmentTree<T>
+impl<T> RangeQuerier for SegmentTree<T>
 where
     T: Add<Output = T> + Default + Copy,
 {
